@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neon RL - Environment</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #10b981;
+            --primary-dark: #059669;
+            --secondary: #6366f1;
+            --bg-light: #ffffff;
+            --bg-gray: #f9fafb;
+            --text-dark: #111827;
+            --text-gray: #6b7280;
+            --border: #e5e7eb;
+            --shadow: rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-gray);
+            color: var(--text-dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background-color: var(--bg-light);
+            padding: 20px 40px;
+            border-bottom: 1px solid var(--border);
+            box-shadow: 0 1px 3px var(--shadow);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .env-title {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .env-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .close-btn {
+            background: var(--bg-gray);
+            color: var(--text-dark);
+            border: 1px solid var(--border);
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .close-btn:hover {
+            background: var(--border);
+        }
+
+        main {
+            flex: 1;
+            padding: 40px;
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .control-panel {
+            background: var(--bg-light);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 32px;
+            margin-bottom: 32px;
+            box-shadow: 0 2px 8px var(--shadow);
+        }
+
+        .panel-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .control-row {
+            display: flex;
+            gap: 20px;
+            align-items: flex-end;
+            flex-wrap: wrap;
+            margin-bottom: 24px;
+        }
+
+        .control-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            flex: 1;
+            min-width: 160px;
+        }
+
+        .control-group label {
+            color: var(--text-gray);
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .control-group select,
+        .control-group input {
+            background-color: var(--bg-gray);
+            border: 1px solid var(--border);
+            color: var(--text-dark);
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            transition: border-color 0.2s;
+        }
+
+        .control-group select:focus,
+        .control-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background: var(--bg-gray);
+            color: var(--text-dark);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--border);
+        }
+
+        .environment-display {
+            background-color: var(--bg-light);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 32px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 500px;
+            box-shadow: 0 2px 8px var(--shadow);
+            margin-bottom: 32px;
+        }
+
+        #envCanvas {
+            border: 1px solid #000;
+        }
+
+
+        .stats-panel {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 24px;
+        }
+
+        .stat-card {
+            background: var(--bg-light);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            text-align: center;
+            box-shadow: 0 2px 8px var(--shadow);
+        }
+
+        .stat-label {
+            color: var(--text-gray);
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-value {
+            color: var(--primary);
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
+
+        .grid-cell {
+            background-color: #f9fafb;
+            border: 1px solid #e5e7eb;
+            transition: all 0.2s ease;
+        }
+
+        .grid-cell.wall {
+            background-color: #9ca3af;
+        }
+
+        .grid-cell.start {
+            background-color: var(--primary);
+        }
+
+        .grid-cell.goal {
+            background-color: var(--secondary);
+        }
+
+        .grid-cell.agent {
+            background-color: #f59e0b;
+            border-radius: 50%;
+        }
+
+        .grid-cell.visited {
+            background-color: rgba(16, 185, 129, 0.1);
+        }
+
+        .toggle-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            color: var(--text-dark);
+        }
+
+        .control-panel .control-row {
+            margin-top: 16px;
+            gap: 16px;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+    <header>
+        <div class="header-content">
+            <div class="env-title">
+                <div class="env-icon" id="headerIcon">
+                    <i class="fas fa-table-cells"></i>
+                </div>
+                <h1 id="envName">Environment</h1>
+            </div>
+            <button class="close-btn" onclick="window.close()">
+                <i class="fas fa-times"></i> Close
+            </button>
+        </div>
+    </header>
+
+    <main>
+        <div class="control-panel">
+            <h2 class="panel-title">
+                <i class="fas fa-sliders-h"></i>
+                Control Panel
+            </h2>
+
+            <div class="control-row">
+                <div class="control-group">
+                    <label for="algorithmSelect">Algorithm</label>
+                    <select id="algorithmSelect">
+                        <option value="qlearning">Q-Learning</option>
+                        <option value="sarsa">SARSA</option>
+                        <option value="expectedsarsa">Expected SARSA</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label for="learningRate">Learning Rate (α)</label>
+                    <input type="number" id="learningRate" value="0.1" step="0.01" min="0" max="1">
+                </div>
+
+                <div class="control-group">
+                    <label for="epsilon">Epsilon (ε)</label>
+                    <input type="number" id="epsilon" value="0.1" step="0.01" min="0" max="1">
+                </div>
+
+                <div class="control-group">
+                    <label for="discount">Discount Factor (γ)</label>
+                    <input type="number" id="discount" value="0.99" step="0.01" min="0" max="1">
+                </div>
+
+                <div class="control-group">
+                    <label>Training Status</label>
+                    <div id="trainingStatus">Idle</div>
+                </div>
+            </div>
+
+            <!-- Training Progress Bar -->
+            <div class="control-group">
+                <label>Training Progress</label>
+                <div id="trainingProgressContainer"
+                    style="position: relative; width: 100%; background: #e5e7eb; height: 24px; border-radius: 12px; overflow: hidden;">
+                    <div id="progressGreen"
+                        style="width: 0%; height: 100%; background: #10b981; position: absolute; left: 0;"></div>
+                    <div id="progressYellow"
+                        style="width: 0%; height: 100%; background: #f59e0b; position: absolute; left: 0;"></div>
+                    <span id="trainingProgressText"
+                        style="position: absolute; width: 100%; text-align: center; color: white; font-weight: bold; line-height: 24px;"></span>
+                    <span id="trainingProgressMax"
+                        style="position: absolute; right: 5px; top: 0; font-weight: bold; line-height: 24px; color: black; display: none;"></span>
+                </div>
+            </div>
+
+
+
+            <!-- Control Buttons -->
+            <div class="control-row">
+                <button class="btn btn-secondary" id="resetBtn"><i class="fas fa-redo"></i> Reset</button>
+                <button class="btn btn-secondary" id="stepBtn"><i class="fas fa-step-forward"></i> Step</button>
+                <button class="btn" id="runBtn"><i class="fas fa-play"></i> Run Episode</button>
+                <button class="btn" id="trainBtn">Train</button>
+
+            </div>
+
+            <!-- Toggle arrows and numbers for heatmap -->
+            <div class="control-row" style="margin-top: 16px; gap: 24px;">
+                <label class="toggle-label">
+                    <input type="checkbox" id="showArrowsCheckbox">
+                    Show Arrows
+                </label>
+                <label class="toggle-label">
+                    <input type="checkbox" id="showNumbersCheckbox">
+                    Show Q-values
+                </label>
+                <label for="agentShapeSelect">Agent Shape:</label>
+                <select id="agentShapeSelect">
+                    <option value="square">Square</option>
+                    <option value="circle">Circle</option>
+                    <option value="cutefrog">Cute Frog</option>
+                </select>
+            </div>
+
+        </div>
+
+        <!-- Environment Canvas -->
+        <!-- Environment + Chart Side by Side -->
+        <div style="display: flex; gap: 24px; align-items: flex-start; margin-bottom: 32px;">
+
+            <!-- Environment Canvas -->
+            <div class="environment-display" style="flex: 1; min-width: 400px;">
+                <canvas id="envCanvas"></canvas>
+            </div>
+
+            <!-- Episode Rewards Chart -->
+            <div style="flex: 1; min-width: 300px;">
+                <label>Episode Rewards</label>
+                <canvas id="rewardChart"></canvas>
+            </div>
+
+        </div>
+
+
+        <!-- Stats Panel -->
+        <div class="stats-panel">
+            <div class="stat-card">
+                <div class="stat-label">Last Action</div>
+                <div id="lastAction"></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Reward</div>
+                <div id="lastReward"></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Q(s,a)</div>
+                <div id="qValue"></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Episodes</div>
+                <div class="stat-value" id="episodeCount">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Total Reward</div>
+                <div class="stat-value" id="totalReward">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Steps</div>
+                <div class="stat-value" id="stepCount">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Success Rate</div>
+                <div class="stat-value" id="successRate">0%</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Last Episode Reward</div>
+                <div class="stat-value" id="lastEpisodeReward">0</div>
+            </div>
+        </div>
+    </main>
+
+    <script type="module" src="./js/main.js"></script>
+
+
+</body>
+
+</html>

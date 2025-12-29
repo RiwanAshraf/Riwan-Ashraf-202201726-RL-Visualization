@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neon RL - Interactive Reinforcement Learning</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #10b981;
+            --primary-dark: #059669;
+            --secondary: #6366f1;
+            --bg-light: #ffffff;
+            --bg-gray: #f9fafb;
+            --text-dark: #111827;
+            --text-gray: #6b7280;
+            --border: #e5e7eb;
+            --shadow: rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-gray);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 40px;
+        }
+
+        /* Header */
+        header {
+            background-color: var(--bg-light);
+            padding: 24px 0;
+            border-bottom: 1px solid var(--border);
+            box-shadow: 0 1px 3px var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        .logo h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 32px;
+        }
+
+        nav a {
+            color: var(--text-gray);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        nav a:hover {
+            color: var(--primary);
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 80px 0;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: var(--text-dark);
+            margin-bottom: 24px;
+            line-height: 1.2;
+        }
+
+        .hero .gradient-text {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            color: var(--text-gray);
+            max-width: 700px;
+            margin: 0 auto 40px;
+            line-height: 1.8;
+        }
+
+        .cta-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 16px 32px;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+        }
+
+        /* Features Section */
+        .features {
+            padding: 60px 0;
+            background-color: var(--bg-light);
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .section-header h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 16px;
+        }
+
+        .section-header p {
+            font-size: 1.125rem;
+            color: var(--text-gray);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 32px;
+            margin-bottom: 80px;
+        }
+
+        .feature-card {
+            text-align: center;
+            padding: 32px 24px;
+        }
+
+        .feature-icon {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            color: white;
+            font-size: 1.75rem;
+        }
+
+        .feature-card h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 12px;
+        }
+
+        .feature-card p {
+            color: var(--text-gray);
+            line-height: 1.7;
+        }
+
+        /* Environments Section - UPDATED */
+        .environments {
+            padding: 80px 0;
+        }
+
+        .environments-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); /* Changed to 2 columns */
+            gap: 40px; /* Increased gap */
+        }
+
+        .env-card {
+            background: var(--bg-light);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px var(--shadow);
+            height: 500px; /* Increased height */
+            display: flex;
+            flex-direction: column;
+        }
+
+        .env-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+            border-color: var(--primary);
+        }
+
+        .env-preview {
+            width: 100%;
+            height: 280px; /* Increased height */
+            background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .env-preview canvas {
+            width: 100%;
+            height: 100%;
+        }
+
+        .env-card-content {
+            padding: 32px; /* Increased padding */
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .env-card-header {
+            display: flex;
+            align-items: center;
+            gap: 16px; /* Increased gap */
+            margin-bottom: 16px; /* Increased margin */
+        }
+
+        .env-card-icon {
+            font-size: 2rem; /* Increased size */
+            color: var(--primary);
+        }
+
+        .env-card h3 {
+            font-size: 1.5rem; /* Increased size */
+            font-weight: 700; /* Bolder */
+            color: var(--text-dark);
+        }
+
+        .env-card p {
+            color: var(--text-gray);
+            font-size: 1.1rem; /* Increased size */
+            line-height: 1.6;
+            margin-bottom: 24px; /* Increased margin */
+            flex: 1;
+        }
+
+        .launch-btn {
+            width: 100%;
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 16px 20px; /* Increased padding */
+            border-radius: 10px; /* Slightly larger */
+            font-size: 1.1rem; /* Increased size */
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px; /* Increased gap */
+        }
+
+        .launch-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--bg-light);
+            border-top: 1px solid var(--border);
+            padding: 40px 0;
+            margin-top: 80px;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 32px;
+        }
+
+        .footer-links a {
+            color: var(--text-gray);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .footer-links a:hover {
+            color: var(--primary);
+        }
+
+        .copyright {
+            color: var(--text-gray);
+            font-size: 0.9rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 968px) {
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .environments-grid {
+                grid-template-columns: 1fr; /* 1 column on mobile */
+                gap: 30px;
+            }
+
+            .env-card {
+                height: 450px; /* Slightly smaller on mobile */
+            }
+
+            .env-preview {
+                height: 250px;
+            }
+
+            .footer-content {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 20px;
+            }
+            
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .section-header h2 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <h1>Neon RL</h1>
+                </div>
+                <nav>
+                    <ul>
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#features">Features</a></li>
+                        <li><a href="#environments">Environments</a></li>
+                        <li><a href="#docs">Documentation</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="container">
+                <h1>
+                    Learn <span class="gradient-text">Reinforcement Learning</span><br>
+                    Through Interactive Exploration
+                </h1>
+                <p>
+                    Master RL algorithms with hands-on visualizations and real-time simulations.
+                    From Q-Learning to Deep RL, explore environments and watch agents learn before your eyes.
+                </p>
+                <a href="#environments" class="cta-button">
+                    <i class="fas fa-rocket"></i>
+                    Explore Environments
+                </a>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section class="features" id="features">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Why Neon RL?</h2>
+                    <p>Built for learners, researchers, and enthusiasts who want to understand RL deeply</p>
+                </div>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-eye"></i>
+                        </div>
+                        <h3>Visual Learning</h3>
+                        <p>Watch algorithms in action with real-time visualizations that make complex concepts intuitive
+                            and easy to understand.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-sliders-h"></i>
+                        </div>
+                        <h3>Interactive Controls</h3>
+                        <p>Adjust parameters on the fly and see how they affect agent behavior. Experiment with learning
+                            rates, exploration, and more.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <h3>Real-time Analytics</h3>
+                        <p>Track performance metrics, success rates, and learning curves as your agents train across
+                            multiple episodes.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Environments Section -->
+        <section class="environments" id="environments">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Interactive Environments</h2>
+                    <p>Choose an environment and start experimenting with different RL algorithms</p>
+                </div>
+                <div class="environments-grid" id="environmentsGrid"></div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="copyright">
+                    © 2023 Neon RL. All rights reserved.
+                </div>
+                <div class="footer-links">
+                    <a href="#about">About</a>
+                    <a href="#documentation">Documentation</a>
+                    <a href="#github">GitHub</a>
+                    <a href="#contact">Contact</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const environments = [
+            {
+                id: 'gridworld',
+                name: 'GridWorld',
+                icon: 'fa-table-cells',
+                description: 'Navigate from start to goal while avoiding obstacles. Perfect for learning basic RL concepts.',
+                preview: 'grid'
+            },
+            {
+                id: 'cliffwalking',
+                name: 'Cliff Walking',
+                icon: 'fa-skull',
+                description: 'Navigate along a dangerous cliff edge. A classic benchmark highlighting the difference between SARSA and Q-learning.',
+                preview: 'cliff'
+            },
+            {
+                id: 'mountaincar',
+                name: 'Mountain Car',
+                icon: 'fa-mountain',
+                description: 'Drive an underpowered car up a hill by building momentum through exploration.',
+                preview: 'mountain'
+            },
+            {
+                id: 'frozenlake',
+                name: 'Frozen Lake',
+                icon: 'fa-snowflake',
+                description: 'Cross a frozen lake without falling into holes. Slippery and stochastic.',
+                preview: 'frozenlake'
+            }
+        ];
+
+        function initEnvironmentsGrid() {
+            const grid = document.getElementById('environmentsGrid');
+
+            environments.forEach(env => {
+                const card = document.createElement('div');
+                card.className = 'env-card';
+                card.innerHTML = `
+                    <div class="env-preview">
+                        <canvas id="preview-${env.id}"></canvas>
+                    </div>
+                    <div class="env-card-content">
+                        <div class="env-card-header">
+                            <i class="fas ${env.icon} env-card-icon"></i>
+                            <h3>${env.name}</h3>
+                        </div>
+                        <p>${env.description}</p>
+                        <button class="launch-btn">
+                            <i class="fas fa-play"></i>
+                            Launch Environment
+                        </button>
+                    </div>
+                `;
+
+                card.addEventListener('click', () => openEnvironment(env));
+                grid.appendChild(card);
+
+                setTimeout(() => drawPreview(env.id, env.preview), 100);
+            });
+        }
+
+        function drawPreview(envId, type) {
+            const canvas = document.getElementById(`preview-${envId}`);
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            canvas.width = 500; /* Increased width */
+            canvas.height = 280; /* Increased height to match new size */
+
+            ctx.fillStyle = '#f9fafb';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            switch (type) {
+                case 'grid':
+                    drawGridPreview(ctx, canvas);
+                    break;
+                case 'mountain':
+                    drawMountainPreview(ctx, canvas);
+                    break;
+                case 'cliff':
+                    drawCliffPreview(ctx, canvas);
+                    break;
+                case 'frozenlake':
+                    drawFrozenLakePreview(ctx, canvas);
+                    break;
+            }
+        }
+
+        function drawGridPreview(ctx, canvas) {
+            const gridSize = 8;
+            const cellSize = 40; /* Increased cell size */
+            const offsetX = (canvas.width - gridSize * cellSize) / 2;
+            const offsetY = (canvas.height - gridSize * cellSize) / 2;
+
+            for (let i = 0; i < gridSize; i++) {
+                for (let j = 0; j < gridSize; j++) {
+                    ctx.strokeStyle = '#d1d5db';
+                    ctx.lineWidth = 1;
+                    ctx.strokeRect(offsetX + i * cellSize, offsetY + j * cellSize, cellSize, cellSize);
+                }
+            }
+
+            // Start
+            ctx.fillStyle = '#10b981';
+            ctx.fillRect(offsetX + 2, offsetY + 2, cellSize - 4, cellSize - 4);
+
+            // Goal
+            ctx.fillStyle = '#6366f1';
+            ctx.fillRect(offsetX + (gridSize - 1) * cellSize + 2, offsetY + (gridSize - 1) * cellSize + 2, cellSize - 4, cellSize - 4);
+
+            // Agent
+            ctx.fillStyle = '#f59e0b';
+            ctx.beginPath();
+            ctx.arc(offsetX + cellSize / 2, offsetY + cellSize / 2, cellSize / 3, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        function drawMountainPreview(ctx, canvas) {
+            ctx.strokeStyle = '#10b981';
+            ctx.lineWidth = 4;
+            ctx.beginPath();
+            ctx.moveTo(0, canvas.height - 40);
+            ctx.quadraticCurveTo(canvas.width / 4, canvas.height - 120, canvas.width / 2, canvas.height / 2);
+            ctx.quadraticCurveTo(3 * canvas.width / 4, canvas.height - 40, canvas.width, canvas.height - 80);
+            ctx.stroke();
+
+            // Car
+            ctx.fillStyle = '#f59e0b';
+            ctx.fillRect(canvas.width / 4 - 20, canvas.height - 125, 40, 20);
+        }
+
+        function drawCliffPreview(ctx, canvas) {
+            const rows = 4;
+            const cols = 12;
+            const cellW = canvas.width / cols;
+            const cellH = canvas.height / rows;
+
+            // Background
+            ctx.fillStyle = '#f9fafb';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Grid
+            ctx.strokeStyle = '#d1d5db';
+            for (let y = 0; y < rows; y++) {
+                for (let x = 0; x < cols; x++) {
+                    ctx.strokeRect(x * cellW, y * cellH, cellW, cellH);
+                }
+            }
+
+            // Cliff (bottom row, excluding start & goal)
+            ctx.fillStyle = '#111827';
+            for (let x = 1; x < cols - 1; x++) {
+                ctx.fillRect(x * cellW, (rows - 1) * cellH, cellW, cellH);
+            }
+
+            // Start
+            ctx.fillStyle = '#10b981';
+            ctx.fillRect(0 * cellW + 4, (rows - 1) * cellH + 4, cellW - 8, cellH - 8);
+
+            // Goal
+            ctx.fillStyle = '#6366f1';
+            ctx.fillRect((cols - 1) * cellW + 4, (rows - 1) * cellH + 4, cellW - 8, cellH - 8);
+
+            // Agent
+            ctx.fillStyle = '#f59e0b';
+            ctx.beginPath();
+            ctx.arc(cellW / 2, (rows - 1) * cellH + cellH / 2, cellH / 3, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        function drawFrozenLakePreview(ctx, canvas) {
+            const gridSize = 4;
+            const cellSize = 100; /* Increased cell size */
+            const offsetX = (canvas.width - gridSize * cellSize) / 2;
+            const offsetY = (canvas.height - gridSize * cellSize) / 2;
+
+            // Draw ice background
+            ctx.fillStyle = '#dbeafe';
+            ctx.fillRect(offsetX, offsetY, gridSize * cellSize, gridSize * cellSize);
+
+            // Draw grid
+            for (let y = 0; y < gridSize; y++) {
+                for (let x = 0; x < gridSize; x++) {
+                    ctx.strokeStyle = '#94a3b8';
+                    ctx.lineWidth = 2;
+                    ctx.strokeRect(offsetX + x * cellSize, offsetY + y * cellSize, cellSize, cellSize);
+                }
+            }
+
+            // Start (top-left)
+            ctx.fillStyle = '#a0e0ff';
+            ctx.fillRect(offsetX + 2, offsetY + 2, cellSize - 4, cellSize - 4);
+
+            // Goal (bottom-right)
+            ctx.fillStyle = '#10b981';
+            ctx.fillRect(offsetX + (gridSize - 1) * cellSize + 2, offsetY + (gridSize - 1) * cellSize + 2, cellSize - 4, cellSize - 4);
+
+            // Holes (positions 0,2; 1,3; 3,0; 3,2)
+            const holes = [
+                {x: 2, y: 0},
+                {x: 3, y: 1},
+                {x: 0, y: 3},
+                {x: 2, y: 3}
+            ];
+            
+            ctx.fillStyle = '#4b5563';
+            holes.forEach(hole => {
+                ctx.fillRect(
+                    offsetX + hole.x * cellSize + 2,
+                    offsetY + hole.y * cellSize + 2,
+                    cellSize - 4,
+                    cellSize - 4
+                );
+            });
+
+            // Agent (start position)
+            ctx.fillStyle = '#f59e0b';
+            ctx.beginPath();
+            ctx.arc(
+                offsetX + cellSize / 2,
+                offsetY + cellSize / 2,
+                cellSize / 4,
+                0,
+                Math.PI * 2
+            );
+            ctx.fill();
+        }
+
+        function openEnvironment(env) {
+            localStorage.setItem('currentEnvironment', env.id);
+
+            const width = 1200;
+            const height = 800;
+            const left = (screen.width - width) / 2;
+            const top = (screen.height - height) / 2;
+
+            window.open(
+                'environment.html',
+                '_blank',
+                `width=${width},height=${height},left=${left},top=${top}`
+            );
+        }
+
+        initEnvironmentsGrid();
+    </script>
+
+</body>
+
+</html>
